@@ -28,21 +28,20 @@ while login_statue:
         login_statue = False
         continue
     # 非離開給予回應
-    choice = int(choice)
     match choice:
-        case 1:
+        case '1':
             create_dbandtable()
-        case 2:
+        case '2':
             import_data('members.txt')
-        case 3:
+        case '3':
             show_data('members')
-        case 4:
+        case '4':
             add_data('members')
-        case 5:
+        case '5':
             updata('members')
-        case 6:
+        case '6':
             print('6')
-        case 7:
+        case '7':
             print('7')
         case _:
             print('無效的選擇')
