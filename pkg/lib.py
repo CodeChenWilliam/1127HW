@@ -125,7 +125,7 @@ def add_data(tname:str) -> None:
     '''
     # 連線到資料庫
     con_db()
-    # 取的輸入資料
+    # 取得輸入資料
     has_Error = False
     name = input('請輸入姓名: ')
     sex = input('請輸入性別: ')
@@ -172,7 +172,7 @@ def updata(tname: str) -> None:
         print('性別與手機都必須要修改！')
         has_Error = True
     try:
-        #取的原本資料
+        #取得原本資料
         cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
         odata = cursor.fetchone()
         cursor.execute(f'UPDATE {tname} SET msex = ?, mphone = ? WHERE mname = ?',
@@ -189,5 +189,56 @@ def updata(tname: str) -> None:
         print('=>異動 1 筆記錄')
         print('修改後資料：')
         print(f'姓名：{cdata[1]}，性別：{cdata[2]}，手機：{cdata[3]}')
+    # 結束資料庫連線
+    end_con_db()
+
+
+def find_use_phone(tname:str ) -> None:
+    ''' tname: Table name
+        使用手機查詢資料庫
+    '''
+    # 連線到資料庫
+    con_db()
+    # 取得手機
+    has_Error = False
+    phone = input('請輸入想查詢記錄的手機: ')
+    # 取得資料
+    try:
+        cursor.execute(f'SELECT * FROM {tname} WHERE mphone = "{phone}"')
+        cdata = cursor.fetchone()
+    except sqlite3.Error as e:
+        print(e)
+        has_Error = True
+    print(cdata)
+    if cdata == []:
+        print('=>查無資料')
+    elif not has_Error:
+        print('姓名　　　　性別　手機')
+        print('-'*30)
+        print(f'{cdata[1]:\u3000<7}{cdata[2]:<5}{cdata[3]}')
+
+    # 結束資料庫連線
+    end_con_db()
+
+def delet_all_data(tname: str) -> None:
+    ''' tname: Table name
+        刪除所有資料
+    '''
+    # 連線到資料庫
+    con_db()
+    # 計算資料數量
+    cursor.execute(f'SELECT * FROM {tname}')
+    data = cursor.fetchall()
+    index = len(data)
+    # 刪除資料
+    has_Error = False
+    try:
+        cursor.execute(f'DELETE FROM {tname}')
+    except sqlite3.Error as e:
+        print(e)
+        has_Error = True
+
+    if not has_Error:
+        print(f'=>異動 {index} 筆記錄')
     # 結束資料庫連線
     end_con_db()

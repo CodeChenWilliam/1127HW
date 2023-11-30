@@ -1,4 +1,5 @@
-from pkg.lib import add_data, create_dbandtable, get_json, import_data, show_data, show_list, updata
+from pkg.lib import (add_data, create_dbandtable, delet_all_data, find_use_phone, get_json,
+                     import_data, show_data, show_list, updata)
 
 # 設立檔案名稱
 FILENAME = 'pass.json'
@@ -40,8 +41,8 @@ while login_statue:
         case '5':
             updata('members')
         case '6':
-            print('6')
+            find_use_phone('members')
         case '7':
-            print('7')
+            delet_all_data('members')
         case _:
             print('無效的選擇')
