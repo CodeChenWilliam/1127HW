@@ -11,6 +11,7 @@ def get_json(dname: str) -> dict:
 
 def show_list() -> None:
     '''顯示選擇表單'''
+    print()
     print('-' * 10, ' 選單 ', '-' * 10)
     print('0 / Enter 離開')
     print('1 建立資料庫與資料表')
@@ -33,9 +34,9 @@ def con_db() -> None:
 
 def end_con_db() -> None:
     '''停止連線'''
-    # 變更記錄到DB隨然創建表格不需要，但我懶得重寫
+    # 變更記錄到DB雖然創建表格不需要，但我懶得重寫
     conn.commit()
-    # 關閉連線
+    # 關閉連線以免資料庫被鎖定
     cursor.close()
     conn.close()
 
@@ -53,7 +54,7 @@ def create_dbandtable():
         message = '=>資料庫已建立'
     except sqlite3.Error as e:
         message = e
-    # 結束連線以免資料庫被鎖定
+    # 結束資料庫連線
     end_con_db()
     # 回傳資訊
     print(message)
@@ -67,7 +68,7 @@ def import_data(dname: str) -> None:
     index = len(data)
     # 用於Try Catch 變數
     hasError = False
-    # 連結資料庫
+    # 連線到資料庫
     con_db()
     # 切割資料並插入資料庫
     for i in data:
@@ -83,7 +84,37 @@ def import_data(dname: str) -> None:
         print(f'=>異動 {index} 筆記錄')
     # 結束資料庫連線
     end_con_db()
-
+def show_data(tname: str) -> None:
+    ''' tname = Tables name
+        顯示所有紀錄(資料表內容)'''
+    # 連線到資料庫
+    con_db()
+    # 查詢資料表是否有資料
+    has_data = False
+    try:
+        cmd = f'SELECT * FROM {tname}'
+        cursor.execute(cmd)
+        result_all = cursor.fetchall()
+        if result_all != ():
+            has_data = True
+        # 表格標題
+        print()
+        print('姓名　　　　性別　手機')
+        print('-'*30)
+        for row in result_all:
+            # 切割資料
+            name = row[1]
+            name_len = len(name)
+            sex = row[2]
+            phone = row[3]
+            print(f'{name:\u3000<7}{sex:<5}{phone}')
+    except sqlite3.Error as e:
+        print(e)
+    # 如果沒有資料
+    if not has_data:
+        print('=>查無資料')
+    # 結束資料庫連線
+    end_con_db()
 
 # 預設資料庫變數
 DB = 'wanghong.db'

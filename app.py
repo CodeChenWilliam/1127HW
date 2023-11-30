@@ -1,4 +1,4 @@
-from pkg.lib import create_dbandtable, get_json, import_data, show_list
+from pkg.lib import create_dbandtable, get_json, import_data, show_data, show_list
 
 # 設立檔案名稱
 FILENAME = 'pass.json'
@@ -35,7 +35,7 @@ while login_statue:
         case 2:
             import_data('members.txt')
         case 3:
-            print('3')
+            show_data('members')
         case 4:
             print('4')
         case 5:
