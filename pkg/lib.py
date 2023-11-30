@@ -1,6 +1,8 @@
 import json
 import sqlite3
 
+# 預設資料庫變數
+DB = 'wanghong.db'
 
 def get_json(dname: str) -> dict:
     '''取的資料並轉成Python字典'''
@@ -116,5 +118,37 @@ def show_data(tname: str) -> None:
     # 結束資料庫連線
     end_con_db()
 
-# 預設資料庫變數
-DB = 'wanghong.db'
+def add_data(tname:str) -> None:
+    '''tname : Table name
+       增加一行資料到tname資料表中
+       因為是寫死的沒有其他判斷條件
+    '''
+    # 連線到資料庫
+    con_db()
+    # 取的輸入資料
+    has_Error = False
+    name = input('請輸入姓名: ')
+    sex = input('請輸入性別: ')
+    phone = input('請輸入手機: ')
+    if name == '':
+        print('名字不可為空值')
+        has_Error = True
+    elif sex == '':
+        print('性別不可為空值')
+        has_Error = True
+    elif phone == '':
+        print('電話號碼不可為空值')
+        has_Error = True
+    # 寫入資料表
+    data = (name, sex, phone)
+    try:
+        cursor.execute('INSERT INTO members (mname, msex, mphone) \
+            VALUES (?, ?, ?)', data)
+    except sqlite3.Error as e:
+        print(e)
+        has_Error = True
+    # 輸出異動成功
+    if not has_Error:
+        print('=>異動 1 筆記錄')
+    # 結束資料庫連線
+    end_con_db()
