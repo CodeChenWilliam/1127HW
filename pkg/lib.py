@@ -44,10 +44,9 @@ def create_dbandtable():
     '''建立資料庫與資料表，並顯示結果'''
     # 連線到資料庫
     con_db()
-    cmd = '''
-        CREATE TABLE if not exists members(iid INTEGER AUTO_INCREMENT, mname
-        TEXT NOT NULL, msex TEXT NOT NULL, mphone TEXT NOT NULL)
-    '''
+    cmd = 'CREATE TABLE if not exists members(iid INTEGER PRIMARY \
+        KEY AUTOINCREMENT, mname TEXT NOT NULL, msex TEXT NOT NULL,\
+        mphone TEXT NOT NULL)'
     # 確認資料表與資料庫是否正確建立
     try:
         cursor.execute(cmd)
@@ -66,19 +65,22 @@ def import_data(dname: str) -> None:
     data = [line.strip() for line in open(dname, 'r', encoding='UTF-8')]
     # 紀錄資料數量
     index = len(data)
+    # 用於Try Catch 變數
+    hasError = False
     # 連結資料庫
     con_db()
     # 切割資料並插入資料庫
-    for i in range(index):
+    for i in data:
         try:
             insert_value = i.split(',')
             format_value = (insert_value[0], insert_value[1], insert_value[2])
-            cursor.execute('INSERT INTO members VALUES (?, ?, ?)', format_value)
-
+            cursor.execute('INSERT INTO members (mname, msex, mphone)\
+                            VALUES (?, ?, ?)', format_value)
         except sqlite3.Error as e:
-            print(e)
-
-    print(f'=>異動 {index} 筆記錄')
+            print(f'Error Message: {e}')
+            hasError = True
+    if not hasError:
+        print(f'=>異動 {index} 筆記錄')
     # 結束資料庫連線
     end_con_db()
 
