@@ -119,9 +119,9 @@ def show_data(tname: str) -> None:
     end_con_db()
 
 def add_data(tname:str) -> None:
-    '''tname : Table name
-       增加一行資料到tname資料表中
-       因為是寫死的沒有其他判斷條件
+    ''' tname : Table name
+        增加一行資料到tname資料表中
+        因為是寫死的沒有其他判斷條件
     '''
     # 連線到資料庫
     con_db()
@@ -150,5 +150,44 @@ def add_data(tname:str) -> None:
     # 輸出異動成功
     if not has_Error:
         print('=>異動 1 筆記錄')
+    # 結束資料庫連線
+    end_con_db()
+
+
+def updata(tname: str) -> None:
+    ''' tname: Tables Name
+        修改tname的資料
+        性別與手機都要修改
+    '''
+    # 連線到資料庫
+    con_db()
+    # 修改資料
+    has_Error = False
+    name = input('請輸入想修改記錄的姓名: ')
+    if name == '':
+        print('=>必須指定姓名才可修改記錄')
+    sex = input('請輸入要改變的性別: ')
+    phone = input('請輸入要改變的手機: ')
+    if sex == '' or phone == '':
+        print('性別與手機都必須要修改！')
+        has_Error = True
+    try:
+        #取的原本資料
+        cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
+        odata = cursor.fetchone()
+        cursor.execute(f'UPDATE {tname} SET msex = ?, mphone = ? WHERE mname = ?',
+                       (sex, phone, name))
+        cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
+        cdata = cursor.fetchone()
+    except sqlite3.Error as e:
+        print(e)
+        has_Error = True
+    if not has_Error:
+        print()
+        print('原資料：')
+        print(f'姓名：{odata[1]}，性別：{odata[2]}，手機：{odata[3]}')
+        print('=>異動 1 筆記錄')
+        print('修改後資料：')
+        print(f'姓名：{cdata[1]}，性別：{cdata[2]}，手機：{cdata[3]}')
     # 結束資料庫連線
     end_con_db()
