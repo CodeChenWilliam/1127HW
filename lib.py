@@ -166,19 +166,23 @@ def updata(tname: str) -> None:
     name = input('請輸入想修改記錄的姓名: ')
     if name == '':
         print('=>必須指定姓名才可修改記錄')
-    sex = input('請輸入要改變的性別: ')
-    phone = input('請輸入要改變的手機: ')
-    if sex == '' or phone == '':
-        print('性別與手機都必須要修改！')
         has_Error = True
+    # 無姓名則錯誤，有姓名而無手機或性別也錯誤
+    if not has_Error:
+        sex = input('請輸入要改變的性別: ')
+        phone = input('請輸入要改變的手機: ')
+        if sex == '' or phone == '':
+            print('性別與手機都必須要修改！')
+            has_Error = True
     try:
-        #取得原本資料
-        cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
-        odata = cursor.fetchone()
-        cursor.execute(f'UPDATE {tname} SET msex = ?, mphone = ? WHERE mname = ?',
-                       (sex, phone, name))
-        cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
-        cdata = cursor.fetchone()
+        if not has_Error:
+            #取得原本資料
+            cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
+            odata = cursor.fetchone()
+            cursor.execute(f'UPDATE {tname} SET msex = ?, mphone = ? WHERE mname = ?',
+                        (sex, phone, name))
+            cursor.execute(f'SELECT * FROM {tname} WHERE mname = "{name}"')
+            cdata = cursor.fetchone()
     except sqlite3.Error as e:
         print(e)
         has_Error = True
