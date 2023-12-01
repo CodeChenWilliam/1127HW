@@ -1,4 +1,4 @@
-from pkg.lib import (add_data, create_dbandtable, delet_all_data, find_use_phone, get_json,
+from lib import (add_data, create_dbandtable, delet_all_data, find_use_phone, get_json,
                      import_data, show_data, show_list, updata)
 
 # 設立檔案名稱

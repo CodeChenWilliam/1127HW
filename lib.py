@@ -49,7 +49,7 @@ def create_dbandtable():
     con_db()
     cmd = 'CREATE TABLE if not exists members(iid INTEGER PRIMARY \
         KEY AUTOINCREMENT, mname TEXT NOT NULL, msex TEXT NOT NULL,\
-        mphone TEXT NOT NULL)'
+        mphone TEXT UNQIUE)'
     # 確認資料表與資料庫是否正確建立
     try:
         cursor.execute(cmd)
